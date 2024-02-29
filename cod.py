@@ -2,7 +2,6 @@ import os
 import tkinter as tk
 from tkinter import filedialog
 from docx import Document
-from io import BytesIO
 
 def extract_images_from_docx(docx_file, output_folder):
     doc = Document(docx_file)
