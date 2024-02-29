@@ -2,7 +2,7 @@ import os
 import tkinter as tk
 from tkinter import filedialog
 from docx import Document
-import subprocess
+from io import BytesIO
 
 def extract_images_from_docx(docx_file, output_folder):
     doc = Document(docx_file)
@@ -14,14 +14,13 @@ def extract_images_from_docx(docx_file, output_folder):
             images[rel.target_part.partname] = image_data
 
     for idx, (partname, image_data) in enumerate(sorted(images.items())):
+        
         image_name = f"extracted_image_{idx + 1}.png"
+            
         image_path = os.path.join(output_folder, image_name)
             
         with open(image_path, "wb") as img_file:
             img_file.write(image_data)
-
-        # Open the image using the default Windows Photo Viewer
-        subprocess.Popen(["start", "explorer", image_path], shell=True)
 
 def browse_file():
     file_path = filedialog.askopenfilename(filetypes=[("Word files", "*.docx")])
@@ -43,12 +42,9 @@ def extract_images():
     else:
         result_label.config(text="Пожалуйста, выберите правильный файл и папку.")
 
-# основное окно
-
 root = tk.Tk()
 root.title("Извлечение изображений из .docx")
 
-# элементы для выбора файла docx
 
 label_path = tk.Label(root, text="Выберите .docx файл:")
 label_path.grid(row=0, column=0, padx=10, pady=10, sticky=tk.W)
@@ -59,8 +55,6 @@ entry_path.grid(row=0, column=1, padx=10, pady=10)
 button_browse_file = tk.Button(root, text="Обзор", command=browse_file)
 button_browse_file.grid(row=0, column=2, padx=10, pady=10)
 
-# элементы для выбора папки для сохранения изображений
-
 label_folder = tk.Label(root, text="Выберите папку для сохранения изображений:")
 label_folder.grid(row=1, column=0, padx=10, pady=10, sticky=tk.W)
 
@@ -70,16 +64,10 @@ entry_folder.grid(row=1, column=1, padx=10, pady=10)
 button_browse_folder = tk.Button(root, text="Обзор", command=browse_folder)
 button_browse_folder.grid(row=1, column=2, padx=10, pady=10)
 
-# кнопка для начала извлечения изображений
-
 button_extract = tk.Button(root, text="Извлечь изображения", command=extract_images)
 button_extract.grid(row=2, column=0, columnspan=3, pady=20)
 
-# область для отображения результата
-
 result_label = tk.Label(root, text="")
 result_label.grid(row=3, column=0, columnspan=3)
-
-# запуск цикла
 
 root.mainloop()
