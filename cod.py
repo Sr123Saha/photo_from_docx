@@ -57,6 +57,7 @@ def extract_images():
 
 # Создание основного окна Tkinter
 root = tk.Tk()
+root.geometry("700x150")
 root.title("Извлечение изображений из .docx", )
 root.configure(bg="#0ECCA6")
 
