@@ -9,6 +9,19 @@ def extract_images_from_docx(docx_file, output_folder):
     doc = Document(docx_file)
 
     images = {}
+    image_idx = 1  # Индекс изображений
+
+    for rel in doc.part.rels.values():
+        if "image" in rel.reltype:
+            image_data = rel.target_part.blob
+            image_name = f"product{image_idx}.png"
+            image_path = os.path.join(output_folder, image_name)
+            with open(image_path, "wb") as img_file:
+                img_file.write(image_data)
+            images[rel.target_part.partname] = image_path
+            image_idx += 1
+
+    return images
     # Проходим по всем связям в документе
     for rel in doc.part.rels.values():
         # Если тип связи - изображение
@@ -20,7 +33,7 @@ def extract_images_from_docx(docx_file, output_folder):
 
     # Сохраняем изображения в указанную папку
     for idx, (partname, image_data) in enumerate(sorted(images.items())):
-        image_name = f"extracted_image_{idx + 1}.png"
+        image_name = f"product{idx + 1}.png"
         image_path = os.path.join(output_folder, image_name)
 
         with open(image_path, "wb") as img_file:
